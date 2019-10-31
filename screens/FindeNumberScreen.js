@@ -11,49 +11,22 @@ import Dive from '../models/dive';
 import DiveView from '../components/DiveView';
 
 const FindeNumberScreen = props => {
-    const [enteredValue, setEnteredValue] = useState('');
-    const [execution, setExecution] = useState('A');
+    const [execution, setExecution] = useState('B');
     const [height, setHeight] = useState(1);
-    const [searchedDive, setSearchedDive] = useState(new Dive("-1", "", "0.0", ""));
     const [group, setGroup] = useState(1);
     const [secondGroup, setSecondGroup] = useState(1);
     const [handGroup, setHandGroup] = useState(1);
-    const [salti, setSalti] = useState(0);
+    const [salti, setSalti] = useState(1);
     const [spins, setSpins] = useState(1);
     const [isSpin, setIsSpin] = useState(false);
-
-
-    const dives = useSelector(state => state.dives.dives);
-
-    const numberInputHandler = inputText => {
-        input = inputText.replace(/[^0-9]/g, '');
-        setEnteredValue(input);
-        sDive = dives.filter((dive) => dive.id === input)[0];
-        setSearchedDive(sDive ? sDive : new Dive("-1", "", "0.0", ""));
-    };
-
-    const getExecutionName = () => {
-        switch (execution) {
-            case 'A': return "gestreckt";
-            case 'B': return "gehechtet";
-            case 'C': return "gehockt";
-            case 'D': return "Ausführung freigestellt";
-        }
-    }
-
-    const getSKG = () => {
-        console.log(searchedDive.skg);
-        var skg = JSON.parse(searchedDive.skg);
-        return skg[execution.toString()][height.toString()];
-    }
 
     let spinInput;
     if (group === 5 || isSpin) {
         spinInput =
             <View style={styles.line}>
-                <Text>Schrauben: </Text>
+                <Text style={styles.label}>Schrauben: </Text>
                 <Picker
-                    style={{ height: 50, width: 100 }}
+                    style={styles.input}
                     selectedValue={spins}
                     onValueChange={(itemValue, itemIndex) =>
                         setSpins(itemValue)
@@ -73,62 +46,71 @@ const FindeNumberScreen = props => {
 
     let spingroupPicker;
     if (group === 5) {
-        spingroupPicker = <View style={styles.centeredLine}>
-            <Picker
-                style={{ height: 50, width: 150 }}
-                selectedValue={secondGroup}
-                onValueChange={(itemValue, itemIndex) =>
-                    setSecondGroup(itemValue)
-                }>
-                <Picker.Item label="Vorwärts" value={1} />
-                <Picker.Item label="Rückwärts" value={2} />
-                <Picker.Item label="Auerbach" value={3} />
-                <Picker.Item label="Delphin" value={4} />
-            </Picker></View>;
+        spingroupPicker =
+            <View style={styles.line}>
+                <Text style={styles.label}>...</Text>
+                <Picker
+                    style={styles.input}
+                    selectedValue={secondGroup}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setSecondGroup(itemValue)
+                    }>
+                    <Picker.Item label="Vorwärts" value={1} />
+                    <Picker.Item label="Rückwärts" value={2} />
+                    <Picker.Item label="Auerbach" value={3} />
+                    <Picker.Item label="Delphin" value={4} />
+                </Picker>
+            </View>;
     } else if (group === 6) {
-        spingroupPicker = <View style={styles.centeredLine}>
-            <Picker
-                style={{ height: 50, width: 150 }}
-                selectedValue={handGroup}
-                onValueChange={(itemValue, itemIndex) => {
-                    setHandGroup(itemValue);
-                    if (itemValue <= 3) {
-                        setSecondGroup(itemValue);
-                        setIsSpin(false);
-                    } else {
-                        setSecondGroup(itemValue-3);
-                        setIsSpin(true);
+        spingroupPicker =
+            <View style={styles.line}>
+                <Text style={styles.label}>...</Text>
+                <Picker
+                    style={styles.input}
+                    selectedValue={handGroup}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setHandGroup(itemValue);
+                        if (itemValue <= 3) {
+                            setSecondGroup(itemValue);
+                            setIsSpin(false);
+                        } else {
+                            setSecondGroup(itemValue - 3);
+                            setIsSpin(true);
+                        }
                     }
-                }
-                }>
-                <Picker.Item label="Vorwärts" value={1} />
-                <Picker.Item label="Rückwärts" value={2} />
-                <Picker.Item label="Auerbach" value={3} />
-                <Picker.Item label="Vorwärts - Schraube" value={4} />
-                <Picker.Item label="Rückwärts - Schraube" value={5} />
-                <Picker.Item label="Auerbach - Schraube" value={6} />
-            </Picker>
-        </View>;
+                    }>
+                    <Picker.Item label="Vorwärts" value={1} />
+                    <Picker.Item label="Rückwärts" value={2} />
+                    <Picker.Item label="Auerbach" value={3} />
+                    <Picker.Item label="Vorwärts - Schraube" value={4} />
+                    <Picker.Item label="Rückwärts - Schraube" value={5} />
+                    <Picker.Item label="Auerbach - Schraube" value={6} />
+                </Picker>
+            </View>
     }
 
 
     const diveNmb = ''
         + group
         + ((group === 5 || group === 6) ? secondGroup : '0')
-        + ((group === 5 || (group === 6 && isSpin)) ? spins : '')
-        + salti + execution;
+        + salti
+        + ((group === 5 || (group === 6 && isSpin)) ? spins : '');
 
     return (
         <View style={styles.screen}>
             <StatusBar hidden={true} />
 
             <View style={styles.line}>
-                <Text>Gruppe: </Text>
+                <Text style={styles.label}>Gruppe: </Text>
                 <Picker
-                    style={{ height: 50, width: 175 }}
+                    style={styles.input}
                     selectedValue={group}
-                    onValueChange={(itemValue, itemIndex) =>
-                        setGroup(itemValue)
+                    onValueChange={(itemValue, itemIndex) => {
+                        setGroup(itemValue);
+                        if (group !== 6 && isSpin) {
+                            setIsSpin(false)
+                        }
+                    }
                     }>
                     <Picker.Item label="Vorwärts" value={1} />
                     <Picker.Item label="Rückwärts" value={2} />
@@ -142,9 +124,9 @@ const FindeNumberScreen = props => {
             {spingroupPicker}
 
             <View style={styles.line}>
-                <Text>Saltodrehungen: </Text>
+                <Text style={styles.label}>Saltodrehungen: </Text>
                 <Picker
-                    style={{ height: 50, width: 100 }}
+                    style={styles.input}
                     selectedValue={salti}
                     onValueChange={(itemValue, itemIndex) =>
                         setSalti(itemValue)
@@ -165,9 +147,9 @@ const FindeNumberScreen = props => {
             {spinInput}
 
             <View style={styles.line}>
-                <Text>Ausführung: </Text>
+                <Text style={styles.label}>Ausführung: </Text>
                 <Picker
-                    style={{ height: 50, width: 150 }}
+                    style={styles.input}
                     selectedValue={execution}
                     onValueChange={(itemValue, itemIndex) =>
                         setExecution(itemValue)
@@ -179,9 +161,22 @@ const FindeNumberScreen = props => {
                 </Picker>
             </View>
 
-            <Text>Sprungnummer: {diveNmb}</Text>
-            <DiveView id={diveNmb} />
-
+            <View style={styles.line}>
+                <Text style={styles.label}>Höhe:</Text>
+                <Picker
+                    style={styles.input}
+                    selectedValue={height}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setHeight(itemValue)
+                    }>
+                    <Picker.Item label="1" value={1} />
+                    <Picker.Item label="3" value={3} />
+                    <Picker.Item label="5" value={5} />
+                    <Picker.Item label="7.5" value={7} />
+                    <Picker.Item label="10" value={10} />
+                </Picker>
+            </View>
+            <DiveView style={styles.diveView} id={diveNmb} ex={execution} height={height} showBoxAlways={true} />
         </View>
     );
 };
@@ -190,20 +185,30 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         padding: 10,
+        alignItems: "center",
+        backgroundColor: '#050514',
     },
     line: {
         width: '100%',
         padding: 2,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'center',
     },
-    centeredLine: {
-        width: '100%',
-        padding: 2,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+    diveView: {
+        marginTop: 50,
+    },
+    label: {
+        width: '30%',
+        color: '#e8e3e3',
+        textAlign: 'right',
+        margin: 20,
+    },
+    input: {
+        width: '60%',
+        height: 50,
+        color: '#e8e3e3',
+        backgroundColor: 'grey'
     }
 });
 

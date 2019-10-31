@@ -10,36 +10,17 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Dive from '../models/dive';
+import DiveView from '../components/DiveView';
 
 const LookUpScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
-  const [execution, setExecution] = useState('A');
+  const [execution, setExecution] = useState('B');
   const [height, setHeight] = useState(1);
-  const [searchedDive, setSearchedDive] = useState(new Dive("-1", "", "0.0", ""));
-
-  const dives = useSelector(state => state.dives.dives);
 
   const numberInputHandler = inputText => {
     input = inputText.replace(/[^0-9]/g, '');
     setEnteredValue(input);
-    sDive = dives.filter((dive) => dive.id === input)[0];
-    setSearchedDive(sDive ? sDive : new Dive("-1", "", "0.0", ""));
   };
-
-  const getExecutionName = () => {
-    switch (execution) {
-      case 'A': return "gestreckt";
-      case 'B': return "gehechtet";
-      case 'C': return "gehockt";
-      case 'D': return "Ausführung freigestellt";
-    }
-  }
-
-  const getSKG = () => {
-    console.log(searchedDive.skg);
-    var skg = JSON.parse(searchedDive.skg);
-    return skg[execution.toString()][height.toString()];
-  }
 
   return (
     <TouchableWithoutFeedback
@@ -51,7 +32,7 @@ const LookUpScreen = props => {
         <StatusBar hidden={true} />
         <View style={styles.inputContainer}>
           <View>
-            <Text>Sprungnummer:</Text>
+            <Text style={styles.text}>Sprungnummer:</Text>
             <View style={styles.inputDive}>
               <TextInput style={styles.input}
                 blurOnSubmit
@@ -62,7 +43,7 @@ const LookUpScreen = props => {
                 onChangeText={numberInputHandler}
                 value={enteredValue} />
               <Picker
-                style={{ height: 50, width: 80 }}
+                style={styles.inputPicker}
                 selectedValue={execution}
                 onValueChange={(itemValue, itemIndex) =>
                   setExecution(itemValue)
@@ -75,9 +56,9 @@ const LookUpScreen = props => {
             </View>
           </View>
           <View>
-            <Text>Höhe:</Text>
+            <Text style={styles.text} >Höhe:</Text>
             <Picker
-              style={{ height: 50, width: 100 }}
+              style={styles.inputPicker}
               selectedValue={height}
               onValueChange={(itemValue, itemIndex) =>
                 setHeight(itemValue)
@@ -90,10 +71,7 @@ const LookUpScreen = props => {
             </Picker>
           </View>
         </View>
-        <View style={styles.dive}>
-          <Text>{searchedDive.name} {searchedDive.id !== "-1" ? getExecutionName() : ""}</Text>
-          <Text>{searchedDive.id !== "-1" ? "SKG: " + getSKG() : ""}</Text>
-        </View>
+        <DiveView style={{ marginTop: 20 }} id={enteredValue} ex={execution} height={height} showBoxAlways={false} />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -103,7 +81,8 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 10,
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#050514',
   },
   input: {
     height: 30,
@@ -111,7 +90,8 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderBottomWidth: 1,
     marginVertical: 10,
-    textAlign: 'right'
+    textAlign: 'right',
+    color: '#e8e3e3',
   },
   inputContainer: {
     width: '100%',
@@ -119,14 +99,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 10,
+    color: '#e8e3e3',
   },
   inputDive: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    color: '#e8e3e3',
   },
   dive: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
+    color: '#e8e3e3',
+  },
+  inputPicker: {
+    width: 100,
+    height: 50,
+    color: '#e8e3e3',
+  },
+  text: {
+    color: '#e8e3e3'
   }
 });
 

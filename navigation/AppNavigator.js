@@ -3,20 +3,17 @@ import {
   createAppContainer
 } from 'react-navigation';
 
-import { createMaterialTopTabNavigator  } from 'react-navigation-tabs';
+import { createMaterialTopTabNavigator, createBottomTabNavigator  } from 'react-navigation-tabs';
 
 import FindeNumberScreen from '../screens/FindeNumberScreen'
 import LookUpScreen from '../screens/LookUpScreen'
 
 
-const AppNavigator = createMaterialTopTabNavigator (
+const AppNavigator = createBottomTabNavigator (
   {
     FindNumber: FindeNumberScreen,
     FindDive: LookUpScreen
-  }, {
-  swipeEnabled: true,
-  tabBarPosition: 'bottom'
-}
+  }
 );
 
 export default createAppContainer(AppNavigator);
