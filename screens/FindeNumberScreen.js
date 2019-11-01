@@ -99,7 +99,7 @@ const FindeNumberScreen = props => {
     return (
         <View style={styles.screen}>
             <StatusBar hidden={true} />
-
+            <DiveView style={styles.diveView} id={diveNmb} ex={execution} height={height} showBoxAlways={true} />
             <View style={styles.line}>
                 <Text style={styles.label}>Gruppe: </Text>
                 <Picker
@@ -176,7 +176,6 @@ const FindeNumberScreen = props => {
                     <Picker.Item label="10" value={10} />
                 </Picker>
             </View>
-            <DiveView style={styles.diveView} id={diveNmb} ex={execution} height={height} showBoxAlways={true} />
         </View>
     );
 };
@@ -196,7 +195,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     diveView: {
-        marginTop: 50,
+        marginTop: 10,
+        marginBottom: 50,
     },
     label: {
         width: '30%',
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         width: '60%',
         height: 50,
         color: '#e8e3e3',
-        backgroundColor: 'grey'
+        backgroundColor: '#11113b',
     }
 });
 
