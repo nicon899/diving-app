@@ -28,7 +28,12 @@ const QuizCard = props => {
                 }
             }>
                 <View style={[styles.card, props.style]}>
-                    <Text style={styles.text}>{props.text}</Text>
+                    {props.askName ? <Text style={styles.text}>{props.text}</Text> : <Text
+                        style={
+                            [styles.text,
+                            { fontWeight: 'bold' }]}>
+                        {props.nmb}
+                    </Text>}
                 </View >
             </TouchableOpacity>
         );
