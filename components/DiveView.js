@@ -6,6 +6,7 @@ import {
   Dimensions
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import Colors from '../assets/Colors';
 
 const DiveView = props => {
   const dives = useSelector(state => state.dives.dives);
@@ -56,17 +57,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderRadius: (Dimensions.get('window').width * 0.8 - 20) / 4,
-    borderColor: '#e8e3e3',
+    borderColor: Colors.text,
   },
   textNumber: {
     textAlign: 'center',
     fontWeight: 'bold',
     width: '100%',
-    color: '#e8e3e3'
+    color: Colors.text
   },
   text: {
     textAlign: 'center',
-    color: '#e8e3e3'
+    color: Colors.text
   }
 });
 

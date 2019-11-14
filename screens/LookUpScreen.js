@@ -11,6 +11,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import Dive from '../models/dive';
 import DiveView from '../components/DiveView';
+import Colors from '../assets/Colors'
 
 const LookUpScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     alignItems: 'center',
-    backgroundColor: '#050514',
+    backgroundColor: Colors.background,
   },
   input: {
     height: 30,
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginVertical: 10,
     textAlign: 'right',
-    color: '#e8e3e3',
+    color: Colors.text,
   },
   inputContainer: {
     width: '100%',
@@ -99,25 +100,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 10,
-    color: '#e8e3e3',
+    color: Colors.text,
   },
   inputDive: {
     flexDirection: 'row',
-    color: '#e8e3e3',
+    color: Colors.text,
   },
   dive: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
-    color: '#e8e3e3',
+    color: Colors.text,
   },
   inputPicker: {
     width: 100,
     height: 50,
-    color: '#e8e3e3',
+    color: Colors.text,
   },
   text: {
-    color: '#e8e3e3'
+    color: Colors.text
   }
 });
 
