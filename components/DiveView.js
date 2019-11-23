@@ -24,8 +24,6 @@ const DiveView = props => {
     }
   }
 
-  console.log(Dimensions.get('window').width);
-
   const getExecutionName = () => {
     switch (props.ex) {
       case 'A': return "gestreckt";

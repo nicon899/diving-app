@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import {
     View,
-    Text,
     StyleSheet,
     StatusBar,
-    Modal,
-    TouchableOpacity
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -14,45 +11,13 @@ import DiveTable from '../components/DiveTable';
 
 const MyDivesScreen = props => {
     [height, setHeigt] = useState('1');
-    [showAddDiveModal, setShowAddDiveModal] = useState(false);
-    [modalContent, setModalContent] = useState(<View></View>);
-
     const learnedDives = useSelector(state => state.dives['learnedDives' + height]);
     const inProgressDives = useSelector(state => state.dives['inProgressDives' + height]);
     const goalDives = useSelector(state => state.dives['goalDives' + height]);
 
-    const showModal = (content) => {
-        setModalContent(
-            <View style={styles.modal}>
-                <View style={styles.modalContent}>
-                    <View style={{ height: '90%' }}>{content}</View>
-                    <View style={{ height: '10%' ,alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                setShowAddDiveModal(false);
-                            }}>
-                            <Text>X</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        )
-        setShowAddDiveModal(true);
-    }
-
     return (
         <View style={styles.screen}>
             <StatusBar hidden={true} />
-
-            <Modal
-                animationType='fade'
-                transparent={true}
-                visible={showAddDiveModal}
-                onRequestClose={() => {
-                }}>
-                {modalContent}
-            </Modal>
-
             <DiveTable
                 style={styles.table}
                 dives={learnedDives}
@@ -60,7 +25,6 @@ const MyDivesScreen = props => {
                 height={height}
                 title={'Deine Sprünge'}
                 color={'green'}
-                showModal={showModal}
             />
             <DiveTable
                 style={styles.table}
@@ -69,7 +33,6 @@ const MyDivesScreen = props => {
                 height={height}
                 title={'Am erlernen'}
                 color={'yellow'}
-                showModal={showModal}
             />
             <DiveTable
                 style={styles.table}
@@ -78,7 +41,6 @@ const MyDivesScreen = props => {
                 height={height}
                 title={'Zielsprünge'}
                 color={'blue'}
-                showModal={showModal}
             />
         </View>
     );
@@ -93,7 +55,7 @@ const styles = StyleSheet.create({
     },
     table: {
         width: '90%',
-        maxHeight: '30%',
+        height: '30%',
         margin: 10,
     },
     modal: {
