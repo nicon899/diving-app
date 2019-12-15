@@ -16,8 +16,10 @@ const AnimatedView = props => {
     const [spins, setSpins] = useState(0);
     const [animate, setAnimate] = useState(true);
     const [repeat, setRepeat] = useState(false);
-
     const diverImages = [require('../assets/images/diverForwards.png'), require('../assets/images/diverFront.png'), require('../assets/images/diverBackwards.png'), require('../assets/images/diverBack.png')]
+
+    const durationRotations = ((- 0, 375 / 45) * props.xrotation * props.xrotation + (3, 675 / 9) * props.xrotation) * 1000
+    const durationSpins = 200 * props.spins * 2;
 
     const interpolatedRotateAnimation = animatedValue.interpolate({
         inputRange: [0, 1],
@@ -26,31 +28,33 @@ const AnimatedView = props => {
 
     const animation = Animated.timing(animatedValue, {
         toValue: props.xrotation,
-        duration: 1000 * props.xrotation
+        duration: 750 * props.xrotation
     });
 
     const fallAnimation = Animated.timing(animatedFAllValue, {
-        toValue: (aniHeight / 2) + (diverHeight / 2),
-        duration: props.spins !== 0 ? (((aniHeight + diverHeight) / 2) * ((200 * props.spins * 2) / (((aniHeight + diverHeight) / 2) - diverHeight))) + 2000 : 2000
+        toValue: (aniHeight / 2) - (diverHeight / 2),
+        duration: props.spins !== 0 ? (200 * props.spins * 2) + (750 * props.xrotation) + 1000 : 750 * props.xrotation
     });
 
-    const startFalAnimation = () => {
-        if (props.spins > 0) {
-            fallAnimation.start(console.log('test'), setSpins(props.spins * 2));
-        } else {
-            fallAnimation.start(setAnimate(false), setRepeat(true));
-        }
-    }
+    const diveInAnimation = Animated.timing(animatedFAllValue, {
+        toValue: (aniHeight / 2) + (diverHeight / 2),
+        duration: 1000
+    });
 
     if (aniHeight !== 0 && diverHeight !== 0 && spins === 0 && animate) {
         animation.start(() => {
-            startFalAnimation()
+            if (props.spins === 0) {
+                setRepeat(true);
+                setAnimate(false);
+            } else {
+                setSpins(props.spins * 2)
+            }
         })
+        fallAnimation.start(() => diveInAnimation.start());
     }
 
 
     useEffect(() => {
-        console.log("Spins: " + spins + " Ani: " + animate)
         if (spins > 0 && animate) {
             setDiverDirection(diverDirection === 3 ? 0 : diverDirection + 1);
             setTimeout(function () {
