@@ -3,12 +3,16 @@ import {
     View,
     Text,
     StyleSheet,
-    Button
+    Button,
+    Platform
 } from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
 
 const LearnDivesScreen = props => {
+
     return (
-        <View >
+        <View style={styles.container}>
             <Text>Learn Dives</Text>
             <Button
                 title="Sprungnummern verstehen"
@@ -26,18 +30,30 @@ const LearnDivesScreen = props => {
     );
 };
 
+LearnDivesScreen.navigationOptions = navData => {
+    return {
+        headerTitle: <Text style={{ fontSize: 22, fontWeight: 'bold', width: '100%' }}>Lernen</Text>,
+        headerLeft: (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item
+                    title="Menu"
+                    iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
+                    onPress={() => {
+                        navData.navigation.toggleDrawer();
+                    }}
+                />
+            </HeaderButtons>
+        )
+    };
+};
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-around',
-        alignItems: 'baseline'
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
-LearnDivesScreen.navigationOptions = navData => {
-    return {
-        header: null
-    };
-};
 
 export default LearnDivesScreen;

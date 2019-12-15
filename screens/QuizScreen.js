@@ -3,15 +3,16 @@ import {
     View,
     Text,
     StyleSheet,
-    StatusBar,
     TouchableWithoutFeedback,
+    TouchableOpacity,
     Keyboard,
     TextInput,
-    Button
+    Button,
+    Modal
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import QuizCard from '../components/QuizCard'
-
+import AnimatedView from '../components/AnimatedView';
 
 const QuizScreen = props => {
     const dives = useSelector(state => state.dives.dives);
@@ -27,23 +28,31 @@ const QuizScreen = props => {
     const [guess4, setGuess4] = useState(false);
     const [questionType, setQuestionType] = useState(0.5);
     const [enteredValue, setEnteredValue] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     const numberInputHandler = inputText => {
         input = inputText.replace(/[^0-9]/g, '');
         setEnteredValue(input);
     };
 
+    const loadNewQuestion = () => {
+        setResult("");
+        setSltIndex(Math.round(Math.random() * 3));
+        do {
+            setRndIndex(Math.round(Math.random() * (dives.length - 1)));
+        } while (parseInt(dives[rndIndex].id.charAt(0) === 0 || (parseInt(dives[rndIndex].id.charAt(0) === 5 && parseInt(dives[rndIndex].id.charAt(1) === 0)))));
+
+        setPoints(points + 1);
+        setGuess1(false);
+        setGuess2(false);
+        setGuess3(false);
+        setGuess4(false);
+        setRounds(rounds + 1);
+    }
+
     const onAnswer = (index) => {
         if (sltIndex === index) {
-            setResult("");
-            setSltIndex(Math.round(Math.random() * 3));
-            setRndIndex(Math.round(Math.random() * (dives.length - 1)));
-            setPoints(points + 1);
-            setGuess1(false);
-            setGuess2(false);
-            setGuess3(false);
-            setGuess4(false);
-            setRounds(rounds + 1);
+            setShowModal(true);
             return true;
         } else {
             setResult("Leider falsch!");
@@ -107,11 +116,7 @@ const QuizScreen = props => {
                             Keyboard.dismiss();
                             setEnteredValue('');
                             if (parseInt(dives[rndIndex].id) === parseInt(enteredValue)) {
-                                setResult("");
-                                setSltIndex(Math.round(Math.random() * 3));
-                                setRndIndex(Math.round(Math.random() * (dives.length - 1)));
-                                setPoints(points + 1);
-                                setRounds(rounds + 1);
+                                setShowModal(true);
                             } else {
                                 setResult("Leider falsch!");
                                 setPoints(0);
@@ -171,10 +176,53 @@ const QuizScreen = props => {
         <TouchableWithoutFeedback
             onPress={() => {
                 Keyboard.dismiss();
-            }}
-        >
+            }} >
             <View style={styles.contianer}>
-                <StatusBar hidden={true} />
+                <Modal
+                    animationType='fade'
+                    transparent={true}
+                    visible={showModal}
+                    onRequestClose={() => {
+                    }}>
+                    <View
+                        style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flex: 1,
+                        }}>
+
+                        <View style={styles.modal}>
+                            <View style={{ padding: 20, height: '100%', width: '100%' }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                                    <Text style={{ color: 'green', fontWeight: 'bold', fontSize: 22, width: '100%', textAlign: 'center' }}>Richtig</Text>
+                                </View>
+                                <AnimatedView
+                                    style={{
+                                        flex: 1,
+                                        width: '100%',
+                                    }}
+                                    xrotation={parseInt(dives[rndIndex].id.charAt(2))}
+                                    invard={[3, 4].includes(parseInt(dives[rndIndex].id.charAt(0))) || ([5, 6].includes(parseInt(dives[rndIndex].id.charAt(0))) && ([3, 4].includes(parseInt(dives[rndIndex].id.charAt(1)))))}
+                                    handstand={parseInt(dives[rndIndex].id.charAt(0)) === 6}
+                                    spins={parseInt(dives[rndIndex].id.charAt(0)) === 5 || (parseInt(dives[rndIndex].id.charAt(0)) === 6 && dives[rndIndex].id.length === 4) ? parseInt(dives[rndIndex].id.charAt(3)) : 0}
+                                    directionForward={[1, 3].includes(parseInt(dives[rndIndex].id.charAt(0))) || ([5, 6].includes(parseInt(dives[rndIndex].id.charAt(0))) && ([1, 3].includes(parseInt(dives[rndIndex].id.charAt(1)))))}
+                                />
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', textAlign: 'center', fontWeight: 'bold' }}>
+                                    <Text>{dives[rndIndex].id} - {dives[rndIndex].name}</Text>
+                                </View>
+                            </View>
+                            <View style={{ width: '100%', alignItems: 'flex-end', justifyContent: 'center' }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setShowModal(false);
+                                        loadNewQuestion();
+                                    }}>
+                                    <Text style={{ color: 'blue', fontSize: 18, margin: 5, marginBottom: 10 }}>Weiter</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
                 <View style={styles.points}>
                     <Text>Punkte: {points}</Text>
                 </View>
@@ -229,12 +277,23 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         marginVertical: 10,
     },
+    modal: {
+        justifyContent: 'center',
+        height: '80%',
+        width: '90%',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 25,
+        elevation: 50,
+        padding: 10
+    }
 });
 
 QuizScreen.navigationOptions = navData => {
     return {
         title: 'Quiz',
-        headerStyle: { height: 30 }
     };
 };
 

@@ -3,11 +3,13 @@ import {
     View,
     Text,
     StyleSheet,
-    StatusBar,
+    Platform,
     Picker,
 } from 'react-native';
 import DiveView from '../components/DiveView';
 import Colors from '../assets/Colors';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
 
 const FindeNumberScreen = props => {
     const [execution, setExecution] = useState('B');
@@ -99,7 +101,6 @@ const FindeNumberScreen = props => {
 
     return (
         <View style={styles.screen}>
-            <StatusBar hidden={true} />
             <DiveView style={styles.diveView} id={diveNmb} ex={execution} height={height} showBoxAlways={true} />
             <View style={styles.line}>
                 <Text style={styles.label}>Gruppe: </Text>
@@ -183,6 +184,23 @@ const FindeNumberScreen = props => {
             </View>
         </View>
     );
+};
+
+FindeNumberScreen.navigationOptions = navData => {
+    return {
+        headerTitle: <Text style={{fontSize: 22, fontWeight: 'bold', width: '100%'}}>Sprungnummer finden</Text>,
+        headerLeft: (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item
+                    title="Menu"
+                    iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
+                    onPress={() => {
+                        navData.navigation.toggleDrawer();
+                    }}
+                />
+            </HeaderButtons>
+        )
+    };
 };
 
 const styles = StyleSheet.create({

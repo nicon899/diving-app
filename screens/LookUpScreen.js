@@ -3,15 +3,15 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
   TextInput,
   TouchableWithoutFeedback,
   Keyboard, Picker,
+  Platform
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import Dive from '../models/dive';
 import DiveView from '../components/DiveView';
 import Colors from '../assets/Colors'
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
 
 const LookUpScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
@@ -30,7 +30,6 @@ const LookUpScreen = props => {
       }}
     >
       <View style={styles.screen}>
-        <StatusBar hidden={true} />
         <View style={styles.inputContainer}>
           <View>
             <Text style={styles.text}>Sprungnummer:</Text>
@@ -77,6 +76,23 @@ const LookUpScreen = props => {
     </TouchableWithoutFeedback>
   );
 };
+
+LookUpScreen.navigationOptions = navData => {
+  return {  
+    headerTitle: <Text style={{fontSize: 22, fontWeight: 'bold', width: '100%'}}>Sprungnamen finden</Text>,
+    headerLeft: (
+              <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item
+                  title="Menu"
+                  iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
+                  onPress={() => {
+                    navData.navigation.toggleDrawer();
+                  }}
+                />
+              </HeaderButtons>
+            )
+          };
+  };
 
 const styles = StyleSheet.create({
   screen: {

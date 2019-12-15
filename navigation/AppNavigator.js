@@ -1,13 +1,12 @@
 import React from 'react';
+import Text from 'react-native'
 import {
   createAppContainer
 } from 'react-navigation';
-import Ionicons from '@expo/vector-icons';
 
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
-
 
 import FindeNumberScreen from '../screens/FindeNumberScreen';
 import LookUpScreen from '../screens/LookUpScreen';
@@ -16,7 +15,6 @@ import MyDivesScreen from '../screens/MyDivesScreen';
 import LearnDivesInfoScreen from '../screens/LearnDivesInfoScreen';
 import QuizScreen from '../screens/QuizScreen'
 import ImageIcon from '../components/ImageIcon';
-
 
 const LearnNavigator = createStackNavigator(
   {
@@ -47,11 +45,10 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
   );
 };
 
-
 const LookUpNavigator = createBottomTabNavigator(
   {
-    FindDive: { screen: LookUpScreen },
-    FindNumber: { screen: FindeNumberScreen },
+    FindDive: { screen: createStackNavigator({ LookUpScreen }) },
+    FindNumber: { screen: createStackNavigator({ FindeNumberScreen }) },
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -66,10 +63,26 @@ const LookUpNavigator = createBottomTabNavigator(
 
 const AppNavigator = createDrawerNavigator(
   {
-    MyDives: MyDivesScreen,
-    LookUp: LookUpNavigator,
-    Learn: LearnNavigator
+    MyDives: {
+      screen: createStackNavigator({ MyDivesScreen }),
+      navigationOptions: {
+        drawerLabel: 'Meine Sprünge  ',
+      },
+    },
+    LookUp: {
+      screen: LookUpNavigator,
+      navigationOptions: {
+        drawerLabel: 'Sprung Lexikon  ',
+      }
+    },
+    Learn: {
+      screen: LearnNavigator,
+      navigationOptions: {
+        drawerLabel: 'Sprungnummern lernen   ',
+      }
+    },
   }
 );
+
 
 export default createAppContainer(AppNavigator);

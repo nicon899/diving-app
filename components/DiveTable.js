@@ -1,79 +1,75 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     View,
     Text,
-    Picker,
     FlatList,
     StyleSheet,
     TouchableOpacity,
-    TextInput
+    Dimensions
 } from 'react-native';
+import { useSelector } from 'react-redux';
 import DiveItem from './DiveItem';
-import DiveCard from './DiveCard';
-import DiveView from './DiveView';
-import Colors from '../assets/Colors'
 
 const DiveTable = props => {
-    const [enteredDiveId, setEnteredDiveId] = useState('');
-    const [execution, setExecution] = useState('B');
+    const hasStatus = (status, dive, height) => {
+        if (dive.status[height]['A'] === status) {
+            return true;
+        }
+        if (dive.status[height]['B'] === status) {
+            return true;
+        }
+        if (dive.status[height]['C'] === status) {
+            return true;
+        }
+        if (dive.status[height]['D'] === status) {
+            return true;
+        }
+        return false;
+    }
 
-    const numberInputHandler = inputText => {
-        input = inputText.replace(/[^0-9]/g, '');
-        setEnteredDiveId(inputText);
-    };
+    const dives = useSelector(state => state.dives.dives.filter(dive => hasStatus(props.status, dive, height)));
 
-    const addDive = () => {
-        
+    const tableColor = () => {
+        switch (props.status) {
+            case 'learned':
+                return 'green';
+            case 'inProgress':
+                return 'yellow';
+            case 'goal':
+                return 'blue';
+        }
+    }
+
+    const tableTitle = () => {
+        switch (props.status) {
+            case 'learned':
+                return 'Vorhandene Sprünge';
+            case 'inProgress':
+                return 'Am erlernen';
+            case 'goal':
+                return 'Zielsprünge';
+        }
     }
 
     return (
-        <View style={[styles.table, { borderColor: props.color }, props.style]}>
+        <View style={[styles.table, { borderColor: tableColor() }, props.style]}>
             <View style={styles.header}>
-                <Text style={styles.title}>{props.title}</Text>
+                <Text style={styles.title}>{tableTitle()}</Text>
+                <View style={styles.btnSize}>
+                    <TouchableOpacity onPress={props.fullScreen}>
+                        <Text style={styles.btnSizeText}>[ ]</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <FlatList
-                data={props.dives}
+                data={dives}
                 renderItem={(dive) => <DiveItem
                     dive={dive.item}
                     status={props.status}
                     height={props.height} />
                 }
                 keyExtractor={dive => dive.id} />
-
-            <View style={styles.addDive}>
-                <View style={styles.inputContainer}>
-                    <Text>Sprung: </Text>
-                    <TextInput
-                        style={styles.input}
-                        blurOnSubmit
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="number-pad"
-                        maxLength={4}
-                        onChangeText={numberInputHandler}
-                        value={enteredDiveId}
-                    />
-                </View>
-                <View style={styles.picker}>
-                    <Picker
-                        selectedValue={execution}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setExecution(itemValue)
-                        }>
-                        <Picker.Item label="Gestreckt" value='A' />
-                        <Picker.Item label="Gehechtet" value='B' />
-                        <Picker.Item label="Gehockt" value='C' />
-                        <Picker.Item label="Ausführung freigestellt" value='D' />
-                    </Picker>
-                </View>
-                <View style={[styles.addButton, { backgroundColor: props.color }]}  >
-                    <TouchableOpacity onPress={addDive}>
-                        <Text style={styles.addText}>+</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
         </View >
     );
 };
@@ -92,6 +88,11 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         width: '100%',
+        height: '20%',
+        justifyContent: 'flex-start',
+        maxHeight: Dimensions.get('window').height * 0.075,
+        borderColor: 'black',
+        borderBottomWidth: 1
     },
     title: {
         fontWeight: 'bold',
@@ -99,48 +100,16 @@ const styles = StyleSheet.create({
         width: '90%',
         textAlign: 'center'
     },
-    addText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 22,
-        textAlign: 'center'
-    },
-    input: {
+    btnSize: {
+        width: '10%',
         height: '100%',
-        width: '50%',
-        borderColor: 'grey',
-        borderWidth: 1,
-        borderRadius: 10,
-        color: Colors.text,
-        padding: 5,
-        textAlign: 'center'
-    },
-    inputContainer: {
-        height: '100%',
-        width: '40%',
+        alignContent: 'center',
         justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 5,
-        paddingHorizontal: 5,
-        flexDirection: 'row'
     },
-    addDive: {
-        height: '15%',
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        borderColor: 'black',
-        borderTopWidth: 2,
-        overflow: 'hidden',
-    },
-    picker: {
-        width: '50%',
-        height: 50,
-        color: Colors.text,
-        borderWidth: 1,
-        borderColor: 'grey'
-
+    btnSizeText: {
+        color: 'black',
+        fontSize: 18,
+        textAlign: 'center'
     }
 });
 
