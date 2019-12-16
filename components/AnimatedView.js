@@ -18,8 +18,8 @@ const AnimatedView = props => {
     const [repeat, setRepeat] = useState(false);
     const diverImages = [require('../assets/images/diverForwards.png'), require('../assets/images/diverFront.png'), require('../assets/images/diverBackwards.png'), require('../assets/images/diverBack.png')]
 
-    const durationRotations = ((- 0, 375 / 45) * props.xrotation * props.xrotation + (3, 675 / 9) * props.xrotation) * 1000
-    const durationSpins = 200 * props.spins * 2;
+    const durationRotations = Math.round((-4.167 * props.xrotation * props.xrotation) + 541.667 * props.xrotation + 462.5)
+    const durationSpins = Math.round(200 * props.spins * 2);
 
     const interpolatedRotateAnimation = animatedValue.interpolate({
         inputRange: [0, 1],
@@ -28,12 +28,12 @@ const AnimatedView = props => {
 
     const animation = Animated.timing(animatedValue, {
         toValue: props.xrotation,
-        duration: 750 * props.xrotation
+        duration: durationRotations
     });
 
     const fallAnimation = Animated.timing(animatedFAllValue, {
         toValue: (aniHeight / 2) - (diverHeight / 2),
-        duration: props.spins !== 0 ? (200 * props.spins * 2) + (750 * props.xrotation) + 1000 : 750 * props.xrotation
+        duration: props.spins !== 0 ? (durationSpins + durationRotations) + 1000 : durationRotations + 500
     });
 
     const diveInAnimation = Animated.timing(animatedFAllValue, {
@@ -41,18 +41,25 @@ const AnimatedView = props => {
         duration: 1000
     });
 
-    if (aniHeight !== 0 && diverHeight !== 0 && spins === 0 && animate) {
-        animation.start(() => {
+    const playDiverAnimation = () => {
+        if (aniHeight !== 0 && diverHeight !== 0 && spins === 0 && animate) {
+            animation.start(() => {
+                if (props.spins === 0) {
+                    setRepeat(true);
+                    setAnimate(false);
+                } else {
+                    setSpins(props.spins * 2)
+                }
+            })
             if (props.spins === 0) {
-                setRepeat(true);
-                setAnimate(false);
+                fallAnimation.start(() => diveInAnimation.start(), setAnimate(false));
             } else {
-                setSpins(props.spins * 2)
+                fallAnimation.start(() => diveInAnimation.start());
             }
-        })
-        fallAnimation.start(() => diveInAnimation.start());
+        }
     }
 
+    playDiverAnimation();
 
     useEffect(() => {
         if (spins > 0 && animate) {
@@ -69,6 +76,10 @@ const AnimatedView = props => {
 
     useEffect(() => {
         setAnimate(true);
+        return () => {
+            setAnimate(false);
+            setSpins(0);
+        }
     }, []);
 
     return (
@@ -81,7 +92,6 @@ const AnimatedView = props => {
                         color='black'
                         disabled={!repeat}
                         onPress={() => {
-                            console.log('Press')
                             setRepeat(false)
                             setSpins(0);
                             setAnimate(false);

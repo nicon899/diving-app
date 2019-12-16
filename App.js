@@ -8,6 +8,7 @@ import divesReducer from './store/reducers/dives';
 const rootReducer = combineReducers({
   dives: divesReducer,
 });
+
 const store = createStore(rootReducer);
 
 export default function App() {
@@ -24,7 +25,6 @@ export default function App() {
           backgroundColor='#000000'
         />
         <AppNavigator />
-
       </View>
     </Provider>
   );
