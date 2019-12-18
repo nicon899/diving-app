@@ -53,6 +53,14 @@ const MyDivesScreen = props => {
             }));
     }
 
+    const removeDive = (diveId, ex) => {
+        console.log('test');
+        dispatch(diveActions.updateDive(diveId.toString(),
+            {
+                [height]: { [ex]: 'new' },
+            }));
+    }
+
     if (fullScreenTable !== 'none') {
         return (
             <View style={styles.screen}>
@@ -89,6 +97,7 @@ const MyDivesScreen = props => {
                     title={'Deine Sprünge'}
                     color={'green'}
                     fullScreen={() => setFullScreenTable('none')}
+                    removeDive={removeDive}
                 />
             </View>
         )
@@ -129,7 +138,7 @@ const MyDivesScreen = props => {
                             setStatus(itemValue)
                         }>
                         <Picker.Item label="Gelernt" value='learned' />
-                        <Picker.Item label="In Arbeit" value='inProgress' />
+                        <Picker.Item label="Am erlernen" value='inProgress' />
                         <Picker.Item label="Ziel" value='goal' />
                     </Picker>
                 </View>
@@ -141,18 +150,21 @@ const MyDivesScreen = props => {
                     status={'learned'}
                     height={height}
                     fullScreen={() => { setFullScreenTable('learned'); setStatus('learned'); }}
+                    removeDive={removeDive}
                 />
                 <DiveTable
                     style={styles.table}
                     status={'inProgress'}
                     height={height}
                     fullScreen={() => { setFullScreenTable('inProgress'); setStatus('inProgress'); }}
+                    removeDive={removeDive}
                 />
                 <DiveTable
                     style={styles.table}
                     status={'goal'}
                     height={height}
                     fullScreen={() => { setFullScreenTable('goal'); setStatus('goal'); }}
+                    removeDive={removeDive}
                 />
             </View>
         </View>

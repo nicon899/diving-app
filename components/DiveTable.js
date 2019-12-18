@@ -67,7 +67,9 @@ const DiveTable = props => {
                 renderItem={(dive) => <DiveItem
                     dive={dive.item}
                     status={props.status}
-                    height={props.height} />
+                    height={props.height}
+                    removeDive={props.removeDive}
+                />
                 }
                 keyExtractor={dive => dive.id} />
         </View >
