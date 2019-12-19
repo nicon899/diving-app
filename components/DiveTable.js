@@ -61,7 +61,6 @@ const DiveTable = props => {
                     </TouchableOpacity>
                 </View>
             </View>
-
             <FlatList
                 data={dives}
                 renderItem={(dive) => <DiveItem

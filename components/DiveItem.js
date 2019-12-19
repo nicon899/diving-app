@@ -37,19 +37,45 @@ const DiveItem = props => {
         return (
             <View style={styles.contianer}>
                 <TouchableWithoutFeedback onPress={() => setFolded(false)}>
-                <Text>{props.dive.name} - {props.dive.id} {getExecutions(props.dive)}</Text>
+                    <Text>{props.dive.name} - {props.dive.id} {getExecutions(props.dive)}</Text>
                 </TouchableWithoutFeedback>
                 <View style={styles.diveInfo}>
-                    <View style={styles.diveInfoLine}>
-                        <TouchableOpacity
-                            onPress={() => { props.removeDive(props.dive.id, 'A') }}>
-                            <Text style={{ fontSize: 22, fontWeight: 'bold' }}> - </Text>
-                        </TouchableOpacity>
-                        <Text>{props.dive.id}A {getSKG('A')}</Text>
-                    </View>
-                    <Text>{props.dive.id}B {getSKG('B')}</Text>
-                    <Text>{props.dive.id}C {getSKG('C')}</Text>
-                    <Text>{props.dive.id}D {getSKG('D')}</Text>
+                    {props.dive.status[props.height].A === props.status &&
+                        <View style={styles.diveInfoLine}>
+                            <TouchableOpacity
+                                onPress={() => { props.removeDive(props.dive.id, 'A') }}>
+                                <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 22}}> - </Text>
+                            </TouchableOpacity>
+                            <Text>{props.dive.id}A {getSKG('A')}</Text>
+                        </View>
+                    }
+                    {props.dive.status[props.height].B === props.status &&
+                        <View style={styles.diveInfoLine}>
+                            <TouchableOpacity
+                                onPress={() => { props.removeDive(props.dive.id, 'B') }}>
+                                <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 22}}> - </Text>
+                            </TouchableOpacity>
+                            <Text>{props.dive.id}B {getSKG('B')}</Text>
+                        </View>
+                    }
+                    {props.dive.status[props.height].C === props.status &&
+                        <View style={styles.diveInfoLine}>
+                            <TouchableOpacity
+                                onPress={() => { props.removeDive(props.dive.id, 'C') }}>
+                                <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 22}}> - </Text>
+                            </TouchableOpacity>
+                            <Text>{props.dive.id}C {getSKG('C')}</Text>
+                        </View>
+                    }
+                    {props.dive.status[props.height].D === props.status &&
+                        <View style={styles.diveInfoLine}>
+                            <TouchableOpacity
+                                onPress={() => { props.removeDive(props.dive.id, 'D') }}>
+                                <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 22}}> - </Text>
+                            </TouchableOpacity>
+                            <Text>{props.dive.id}D {getSKG('D')}</Text>
+                        </View>
+                    }
                 </View>
             </View>
         );
@@ -72,7 +98,8 @@ const styles = StyleSheet.create({
         borderColor: '#f2f2f2',
     },
     diveInfoLine: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 });
 
