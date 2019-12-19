@@ -9,6 +9,8 @@ import {
     TextInput,
     Button,
     NativeModules,
+    Keyboard,
+    KeyboardAvoidingView
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
@@ -63,8 +65,8 @@ const MyDivesScreen = props => {
 
     if (fullScreenTable !== 'none') {
         return (
-            <View style={styles.screen}>
-                <View style={styles.addDive}>
+            <KeyboardAvoidingView style={styles.screen} behavior="height">
+            <View style={styles.addDive}>
                     <TextInput
                         style={styles.diveNmbInput}
                         blurOnSubmit
@@ -74,7 +76,6 @@ const MyDivesScreen = props => {
                         maxLength={4}
                         onChangeText={numberInputHandler}
                         value={enteredDiveId}
-                        placeholder='Sprungnummer'
                     />
                     <View style={{ width: '30%' }}>
                         <Picker
@@ -98,13 +99,14 @@ const MyDivesScreen = props => {
                     color={'green'}
                     fullScreen={() => setFullScreenTable('none')}
                     removeDive={removeDive}
+                    isFullscreen={true}
                 />
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 
     return (
-        <View style={styles.screen}>
+        <KeyboardAvoidingView style={styles.screen} behavior="height">
             <View style={{ color: 'black' }}>
             </View>
             <View style={styles.addDive}>
@@ -117,7 +119,6 @@ const MyDivesScreen = props => {
                     maxLength={4}
                     onChangeText={numberInputHandler}
                     value={enteredDiveId}
-                    placeholder='Sprungnummer'
                 />
                 <View style={{ width: '30%' }}>
                     <Picker
@@ -137,12 +138,12 @@ const MyDivesScreen = props => {
                         onValueChange={(itemValue, itemIndex) =>
                             setStatus(itemValue)
                         }>
-                        <Picker.Item label="Gelernt" value='learned' />
-                        <Picker.Item label="Am erlernen" value='inProgress' />
-                        <Picker.Item label="Ziel" value='goal' />
+                        <Picker.Item color='green' label="Gelernt" value='learned' />
+                        <Picker.Item color='orange' label="Am erlernen" value='inProgress' />
+                        <Picker.Item color='blue' label="Ziel" value='goal' />
                     </Picker>
                 </View>
-                <Button style={{ width: '10%' }} onPress={addDive} title='ADD' />
+                <Button style={{ width: '10%', color: 'white' }} onPress={() => { addDive(); setEnteredDiveId(''); Keyboard.dismiss() }} title='+' />
             </View>
             <View style={styles.tables}>
                 <DiveTable
@@ -151,6 +152,7 @@ const MyDivesScreen = props => {
                     height={height}
                     fullScreen={() => { setFullScreenTable('learned'); setStatus('learned'); }}
                     removeDive={removeDive}
+                    isFullscreen={false}
                 />
                 <DiveTable
                     style={styles.table}
@@ -158,6 +160,7 @@ const MyDivesScreen = props => {
                     height={height}
                     fullScreen={() => { setFullScreenTable('inProgress'); setStatus('inProgress'); }}
                     removeDive={removeDive}
+                    isFullscreen={false}
                 />
                 <DiveTable
                     style={styles.table}
@@ -165,9 +168,10 @@ const MyDivesScreen = props => {
                     height={height}
                     fullScreen={() => { setFullScreenTable('goal'); setStatus('goal'); }}
                     removeDive={removeDive}
+                    isFullscreen={false}
                 />
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
@@ -261,8 +265,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     },
     diveNmbInput: {
-        height: '100%',
-        width: '15%',
+        width: 50,
         borderColor: 'grey',
         borderWidth: 1,
         borderRadius: 10,

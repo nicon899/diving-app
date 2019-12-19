@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import DiveItem from './DiveItem';
+import { Icon } from 'react-native-elements'
+
 
 const DiveTable = props => {
     const hasStatus = (status, dive, height) => {
@@ -34,7 +36,7 @@ const DiveTable = props => {
             case 'learned':
                 return 'green';
             case 'inProgress':
-                return 'yellow';
+                return 'orange';
             case 'goal':
                 return 'blue';
         }
@@ -56,9 +58,12 @@ const DiveTable = props => {
             <View style={styles.header}>
                 <Text style={styles.title}>{tableTitle()}</Text>
                 <View style={styles.btnSize}>
-                    <TouchableOpacity onPress={props.fullScreen}>
-                        <Text style={styles.btnSizeText}>[ ]</Text>
-                    </TouchableOpacity>
+                    <Icon
+                        name={!props.isFullscreen ? 'fullscreen' : 'fullscreen-exit'}
+                        type='MaterialIcons'
+                        color='black'
+                        onPress={props.fullScreen}
+                    ></Icon>
                 </View>
             </View>
             <FlatList
@@ -89,7 +94,6 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         width: '100%',
-        height: '20%',
         justifyContent: 'flex-start',
         maxHeight: Dimensions.get('window').height * 0.075,
         borderColor: 'black',

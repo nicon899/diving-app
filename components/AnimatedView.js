@@ -16,10 +16,13 @@ const AnimatedView = props => {
     const [spins, setSpins] = useState(0);
     const [animate, setAnimate] = useState(true);
     const [repeat, setRepeat] = useState(false);
+    const [doSpin, setDoSpin] = useState(false);
+
     const diverImages = [require('../assets/images/diverForwards.png'), require('../assets/images/diverFront.png'), require('../assets/images/diverBackwards.png'), require('../assets/images/diverBack.png')]
 
-    const durationRotations = Math.round((-4.167 * props.xrotation * props.xrotation) + 541.667 * props.xrotation + 462.5)
+    const durationRotations = Math.round((-4.167 * props.xrotation * props.xrotation) + 541.667 * props.xrotation + 462.5);
     const durationSpins = Math.round(200 * props.spins * 2);
+
 
     const interpolatedRotateAnimation = animatedValue.interpolate({
         inputRange: [0, 1],
@@ -49,30 +52,34 @@ const AnimatedView = props => {
                     setAnimate(false);
                 } else {
                     setSpins(props.spins * 2)
+                    setDoSpin(true);
                 }
             })
             if (props.spins === 0) {
                 fallAnimation.start(() => diveInAnimation.start(), setAnimate(false));
             } else {
-                fallAnimation.start(() => diveInAnimation.start());
+                fallAnimation.start(() => diveInAnimation.start(), setAnimate(false));
             }
         }
     }
 
-    playDiverAnimation();
-
     useEffect(() => {
-        if (spins > 0 && animate) {
+        console.log('done: ' +doSpin)
+        if (spins > 0 && doSpin) {
             setDiverDirection(diverDirection === 3 ? 0 : diverDirection + 1);
             setTimeout(function () {
                 setSpins(spins - 1);
             }, 200);
             if (spins <= 1) {
-                setAnimate(false)
+                setDoSpin(false)
                 setRepeat(true)
             }
         }
-    }, [spins]);
+    }, [spins, doSpin]);
+
+    useEffect(() => {
+        playDiverAnimation();
+    });
 
     useEffect(() => {
         setAnimate(true);
@@ -92,6 +99,7 @@ const AnimatedView = props => {
                         color='black'
                         disabled={!repeat}
                         onPress={() => {
+                            console.log('REPEAT')
                             setRepeat(false)
                             setSpins(0);
                             setAnimate(false);
