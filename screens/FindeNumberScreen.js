@@ -101,7 +101,7 @@ const FindeNumberScreen = props => {
 
     return (
         <View style={styles.screen}>
-            <DiveView style={styles.diveView} id={diveNmb} ex={execution} height={height} showBoxAlways={true} />
+            <DiveView style={styles.diveView} id={diveNmb} ex={execution} height={height} showBoxAlways={true} animation={false} />
             <View style={styles.line}>
                 <Text style={styles.label}>Gruppe: </Text>
                 <View style={styles.input}>
@@ -188,7 +188,7 @@ const FindeNumberScreen = props => {
 
 FindeNumberScreen.navigationOptions = navData => {
     return {
-        headerTitle: <Text style={{fontSize: 22, fontWeight: 'bold', width: '100%'}}>Sprungnummer finden</Text>,
+        headerTitle: <Text style={{ fontSize: 22, fontWeight: 'bold', width: '100%' }}>Sprungnummer finden</Text>,
         headerLeft: (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item
@@ -216,6 +216,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        height: '10%',
+        maxHeight: 50
     },
     diveView: {
         marginTop: 10,
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
     },
     input: {
         width: '60%',
-        height: 50,
+        height: '100%',
         color: Colors.text,
         borderWidth: 1,
         borderColor: 'black'

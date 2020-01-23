@@ -7,10 +7,10 @@ import {
     Platform,
     Dimensions,
     TextInput,
-    Button,
     NativeModules,
     Keyboard,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    TouchableOpacity
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
@@ -66,7 +66,7 @@ const MyDivesScreen = props => {
     if (fullScreenTable !== 'none') {
         return (
             <KeyboardAvoidingView style={styles.screen} behavior="height">
-            <View style={styles.addDive}>
+                <View style={styles.addDive}>
                     <TextInput
                         style={styles.diveNmbInput}
                         blurOnSubmit
@@ -89,18 +89,34 @@ const MyDivesScreen = props => {
                             <Picker.Item label="D" value='D' />
                         </Picker>
                     </View>
-                    <Button style={{ width: '10%' }} onPress={addDive} title='ADD' />
+                    <View style={{ width: '45%' }}>
+                        {status === 'learned' && <Text style={{ color: 'green', fontSize: 18, fontWeight: 'bold' }} >Gelernt</Text>}
+                        {status === 'inProgress' && <Text style={{ color: 'orange', fontSize: 18, fontWeight: 'bold', }} >Am erlernen</Text>}
+                        {status === 'goal' && <Text style={{ color: 'blue', fontSize: 18, fontWeight: 'bold', }} >Ziel</Text>}
+                    </View>
+                    <TouchableOpacity style={[styles.addDiveToStatusButton, { borderColor: status === 'learned' ? 'green' : status === 'inProgress' ? 'orange' : 'blue' }]} onPress={() => { addDive(); setEnteredDiveId('') }}>
+                        <Text
+                            style={{
+                                color: status === 'learned' ? 'green' :
+                                    status === 'inProgress' ? 'orange' : 'blue',
+                                fontSize: 22,
+                                fontWeight: 'bold',
+                                textAlign: 'center'
+                            }} >+</Text>
+                    </TouchableOpacity>
                 </View>
-                <DiveTable
-                    style={styles.tableFullScreen}
-                    status={fullScreenTable}
-                    height={height}
-                    title={'Deine Sprünge'}
-                    color={'green'}
-                    fullScreen={() => setFullScreenTable('none')}
-                    removeDive={removeDive}
-                    isFullscreen={true}
-                />
+                <View style={styles.tables}>
+                    <DiveTable
+                        style={styles.tableFullScreen}
+                        status={fullScreenTable}
+                        height={height}
+                        title={'Deine Sprünge'}
+                        color={'green'}
+                        fullScreen={() => setFullScreenTable('none')}
+                        removeDive={removeDive}
+                        isFullscreen={true}
+                    />
+                </View>
             </KeyboardAvoidingView>
         )
     }
@@ -120,7 +136,7 @@ const MyDivesScreen = props => {
                     onChangeText={numberInputHandler}
                     value={enteredDiveId}
                 />
-                <View style={{ width: '30%' }}>
+                <View style={{ width: '30%'}}>
                     <Picker
                         selectedValue={execution}
                         onValueChange={(itemValue, itemIndex) =>
@@ -143,7 +159,16 @@ const MyDivesScreen = props => {
                         <Picker.Item color='blue' label="Ziel" value='goal' />
                     </Picker>
                 </View>
-                <Button style={{ width: '10%', color: 'white' }} onPress={() => { addDive(); setEnteredDiveId(''); Keyboard.dismiss() }} title='+' />
+                <TouchableOpacity style={[styles.addDiveToStatusButton, { borderColor: status === 'learned' ? 'green' : status === 'inProgress' ? 'orange' : 'blue' }]} onPress={() => { addDive(); setEnteredDiveId('') }}>
+                    <Text
+                        style={{
+                            color: status === 'learned' ? 'green' :
+                                status === 'inProgress' ? 'orange' : 'blue',
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                            textAlign: 'center'
+                        }} >+</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.tables}>
                 <DiveTable
@@ -220,15 +245,15 @@ const styles = StyleSheet.create({
     tables: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-around',
+        justifyContent: 'flex-start',
+        padding: 10,
     },
     table: {
-        width: '95%',
         height: '30%',
+        margin: 10
     },
     tableFullScreen: {
-        width: '95%',
-        height: '90%',
+        flex: 1
     },
     modal: {
         justifyContent: 'center',
@@ -258,21 +283,35 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     addDive: {
-        height: '10%',
+        height: 50,
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        borderBottomWidth: 1,
+        borderColor: '#edece6'
     },
     diveNmbInput: {
         width: 50,
-        borderColor: 'grey',
+        borderColor: Colors.borderColor,
         borderWidth: 1,
         borderRadius: 10,
         color: Colors.text,
         textAlign: 'center',
         maxHeight: Dimensions.get('window').height * 0.05,
     },
+    addDiveToStatusButton: {
+        position: 'absolute',
+        right: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: Colors.borderColor,
+        borderWidth: 1,
+        borderRadius: 15,
+        height: 30,
+        width: 30,
+
+    }
 });
 
 export default MyDivesScreen;

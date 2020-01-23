@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,27 @@ const LookUpScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
   const [execution, setExecution] = useState('B');
   const [height, setHeight] = useState(1);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
 
   const numberInputHandler = inputText => {
     input = inputText.replace(/[^0-9]/g, '');
@@ -71,28 +92,28 @@ const LookUpScreen = props => {
             </Picker>
           </View>
         </View>
-        <DiveView style={{ marginTop: 20 }} id={enteredValue} ex={execution} height={height} showBoxAlways={false} />
+        <DiveView style={{ margin: 20 }} id={enteredValue} ex={execution} height={height} showBoxAlways={false} animation={!isKeyboardVisible} />
       </View>
     </TouchableWithoutFeedback>
   );
 };
 
 LookUpScreen.navigationOptions = navData => {
-  return {  
-    headerTitle: <Text style={{fontSize: 22, fontWeight: 'bold', width: '100%'}}>Sprungnamen finden</Text>,
+  return {
+    headerTitle: <Text style={{ fontSize: 22, fontWeight: 'bold', width: '100%' }}>Sprungnamen finden</Text>,
     headerLeft: (
-              <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item
-                  title="Menu"
-                  iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
-                  onPress={() => {
-                    navData.navigation.toggleDrawer();
-                  }}
-                />
-              </HeaderButtons>
-            )
-          };
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Menu"
+          iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
+          onPress={() => {
+            navData.navigation.toggleDrawer();
+          }}
+        />
+      </HeaderButtons>
+    )
   };
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -100,6 +121,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     backgroundColor: Colors.background,
+    flexDirection: 'column-reverse'
   },
   input: {
     height: 30,
@@ -117,6 +139,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 10,
     color: Colors.text,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 25
   },
   inputDive: {
     flexDirection: 'row',

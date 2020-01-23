@@ -1,4 +1,8 @@
 export default {
     background: 'white',
-    text: 'black'
+    background_dark: 'black',
+    text: 'black',
+    text_dark: 'black',
+    borderColor: 'grey'
+
 }

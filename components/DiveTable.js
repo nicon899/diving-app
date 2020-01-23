@@ -30,6 +30,7 @@ const DiveTable = props => {
     }
 
     const dives = useSelector(state => state.dives.dives.filter(dive => hasStatus(props.status, dive, height)));
+    dives.sort();
 
     const tableColor = () => {
         switch (props.status) {

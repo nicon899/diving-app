@@ -3,7 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    Button,
+    TouchableOpacity,
     Platform
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -13,19 +13,20 @@ const LearnDivesScreen = props => {
 
     return (
         <View style={styles.container}>
-            <Text>Learn Dives</Text>
-            <Button
-                title="Sprungnummern verstehen"
+            <TouchableOpacity
+                style={[styles.button, { backgroundColor: 'green' }]}
                 onPress={() => {
-                    console.log("click")
                     props.navigation.navigate('Info');
-                }} />
-            <Button
-                title="Sprungnummer Quiz"
+                }} >
+                <Text>Sprungnummern erklärt</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={[styles.button, { backgroundColor: 'blue' }]}
                 onPress={() => {
-                    console.log("click")
                     props.navigation.navigate('Quiz');
-                }} />
+                }} >
+                <Text>QUIZ</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -50,8 +51,13 @@ LearnDivesScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        height: '100%',
+    },
+    button: {
+        height: '50%',
+        width: '100%',
+        alignItems: 'center',
         justifyContent: 'center',
-        alignItems: 'center'
     }
 });
 
